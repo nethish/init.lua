@@ -21,3 +21,7 @@ vim.opt.rtp:prepend(lazypath)
 --         autocmd VimEnter * :silent! Explore
 --     augroup END
 -- ]])
+--
+
+-------------------------------------------------- LUA SNIP AND LSP INTEGRATION --------------------------------------------------
+

@@ -24,3 +24,6 @@ o.splitbelow = true
 
 -- Atleast 8 lines above/ below when scrolling.
 o.scrolloff = 8
+
+
+o.cmdheight = 2

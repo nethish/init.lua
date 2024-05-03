@@ -6,6 +6,7 @@ require("lazy").setup("plugins")
 require("lsp")
 require("opts")
 require("keymap")
+require("snippets")
 
 TAB = function(tabwidth)
     vim.opt.tabstop = tabwidth
