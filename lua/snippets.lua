@@ -1,7 +1,5 @@
 local keymap = vim.keymap
 
-
-
 local ls = require("luasnip")
 local s = ls.snippet
 local sn = ls.snippet_node
@@ -32,10 +30,11 @@ local k = require("luasnip.nodes.key_indexer").new_key
 
 --------------------------------------------------- KEYMAP BEGIN ---------------------------------------------------
 
-
 vim.keymap.set({"i"}, "<C-K>", function() print('hello') ls.expand() end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+-- vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
+-- vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<TAB>", function() ls.jump( 1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<S-TAB>", function() ls.jump(-1) end, {silent = true})
 
 vim.keymap.set({"i", "s"}, "<C-E>", function()
 	if ls.choice_active() then
@@ -67,6 +66,7 @@ ls.add_snippets("go", {
   s("ie", fmt("if {} != nil {{\n\t{}\n}}", { i(1, "err"), i(2) })),
   s("var", fmt("{}, {} = {}({})", { i(1, "ret"), i(2, "err", "_"), i(3, "fun"), i(4, "")})),
   s("func", fmt("func {}({}) {}{{\n\t{}\nreturn\n}}", { i(1, "Function"), i(2), i(3, ""), i(4, "")})),
+  s("con", fmt("ctx context.Context", { })),
 })
 
 

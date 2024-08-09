@@ -1,0 +1,58 @@
+1. Breadcrumbs in status line (Fix the eyesore)
+2. Type def peek
+
+            local function show_type_definition_in_float()
+              local params = vim.lsp.util.make_position_params()
+
+              vim.lsp.buf_request(0, 'textDocument/typeDefinition', params, function(err, result, ctx, config)
+                if err then
+                  vim.api.nvim_err_writeln('Error getting type definition: ' .. err.message)
+                  return
+                end
+
+                if not result or vim.tbl_isempty(result) then
+                  vim.api.nvim_echo({{'No type definition found', 'WarningMsg'}}, false, {})
+                  return
+                end
+
+                if vim.tbl_islist(result) then
+                  result = result[1]
+                end
+
+                local uri = result.uri or result.targetUri
+                local range = result.range or result.targetRange
+
+                if uri and range then
+                  local bufnr = vim.uri_to_bufnr(uri)
+                  vim.fn.bufload(bufnr)
+                  vim.print(result)
+                  local lines = vim.api.nvim_buf_get_lines(bufnr, range.start.line, range["end"].line + 1, false)
+                  local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+
+                  local opts = {
+                    relative = 'cursor',
+                    style = 'minimal',
+                    border = 'rounded',
+                    width = 80,
+                    height = #lines,
+                    row = 1,
+                    col = 0,
+                  }
+
+                  local buf = vim.api.nvim_create_buf(false, true)
+                  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+                  vim.api.nvim_buf_set_option(buf, 'filetype', filetype)
+
+                  local win = vim.api.nvim_open_win(buf, true, opts)
+                  vim.api.nvim_win_set_option(win, 'conceallevel', 2)
+                  vim.api.nvim_win_set_option(win, 'concealcursor', 'n')
+                end
+              end)
+            end
+
+            vim.keymap.set('n', '<Leader>lz', show_type_definition_in_float, {noremap = true, silent = true})
+3. lua complete the require
+4. quickfix
+6. folds
+7. Keep the file changes like a workspace
+8. :g/pattern/command
