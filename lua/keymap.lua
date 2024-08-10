@@ -15,7 +15,7 @@ keymap.set('n', '<leader>scc', ':source % <CR>')
 keymap.set('n', '<esc>', ':noh <CR>')
 
 -- Delete current buffer
-vim.api.nvim_set_keymap('n', '<leader>bd', ':BufferClose<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>q', ':BufferClose<CR>', { noremap = true, silent = true })
 
 -- Switch to next buffer
 vim.api.nvim_set_keymap('n', '<TAB>', ':bnext<CR>', { noremap = true, silent = true })
@@ -69,26 +69,26 @@ local telescope_wrapper = function(fn)
 end
 
 local function live_grep_from_project_git_root()
-	local function is_git_repo()
-		vim.fn.system("git rev-parse --is-inside-work-tree")
+  local function is_git_repo()
+    vim.fn.system("git rev-parse --is-inside-work-tree")
 
-		return vim.v.shell_error == 0
-	end
+    return vim.v.shell_error == 0
+  end
 
-	local function get_git_root()
-		local dot_git_path = vim.fn.finddir(".git", ".;")
-		return vim.fn.fnamemodify(dot_git_path, ":h")
-	end
+  local function get_git_root()
+    local dot_git_path = vim.fn.finddir(".git", ".;")
+    return vim.fn.fnamemodify(dot_git_path, ":h")
+  end
 
-	local opts = {}
+  local opts = {}
 
-	if is_git_repo() then
-		opts = {
-			cwd = get_git_root(),
-		}
-	end
+  if is_git_repo() then
+    opts = {
+      cwd = get_git_root(),
+    }
+  end
 
-	require("telescope.builtin").live_grep(opts)
+  require("telescope.builtin").live_grep(opts)
 end
 
 local function find_files_from_project_git_root()
@@ -111,19 +111,22 @@ end
 
 keymap.set('n', '<leader>ff', find_files_from_project_git_root, {})
 keymap.set('n', '<leader>fg', live_grep_from_project_git_root, {})
+keymap.set('n', '<leader>fj', live_grep_from_project_git_root, {})
 keymap.set('n', '<leader>fb', telescope_wrapper(builtin.buffers), {})
+keymap.set('n', '<leader>f;', telescope_wrapper(builtin.buffers), {})
 keymap.set('n', '<leader>fm', telescope_wrapper(builtin.marks), {})
 
 keymap.set('n', '<leader>fh', function()
-    builtin.command_history({
-      initial_mode = 'normal',
-      mappings = {
-        n = {
-          ['e'] = require('telescope.actions').edit_command_line
-        }
+  -- Press CTRL-E to edit the command
+  builtin.command_history({
+    initial_mode = 'normal',
+    mappings = {
+      n = {
+        ['e'] = require('telescope.actions').edit_command_line
       }
-    })
-  end,
+    }
+  })
+end,
 {noremap = true})
 
 keymap.set('n', '<leader>rr', telescope_wrapper(builtin.registers), {})

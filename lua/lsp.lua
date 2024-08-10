@@ -32,6 +32,14 @@ require('lspconfig').gopls.setup({
   -- }
 })
 
+require('lspconfig').rust_analyzer.setup({
+  -- settings = {
+  --   gopls = {
+  --     gofumpt = true
+  --   }
+  -- }
+})
+
 require('lspconfig').lua_ls.setup({
   settings = {
     Lua = {
