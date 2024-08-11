@@ -86,16 +86,16 @@ cmp.setup({
   -- completion = {
   --   completeopt = 'menu,menuone,noinsert'
   -- },
-  -- mapping = cmp.mapping.preset.insert({
-  --   ['<CR>'] = cmp.mapping.confirm({select = false}),
-  --   ['<Tab>'] = cmp_action.tab_complete(),
-  --   ['<S-Tab>'] = cmp_action.select_prev_or_fallback(),
-  -- }),
   mapping = cmp.mapping.preset.insert({
     ['<CR>'] = cmp.mapping.confirm({select = false}),
-    ['<Tab>'] = cmp_action.luasnip_supertab(),
-    ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
+    ['<Tab>'] = cmp_action.tab_complete(),
+    ['<S-Tab>'] = cmp_action.select_prev_or_fallback(),
   }),
+  -- mapping = cmp.mapping.preset.insert({
+  --   ['<CR>'] = cmp.mapping.confirm({select = false}),
+  --   ['<Tab>'] = cmp_action.luasnip_supertab(),
+  --   ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
+  -- }),
   --- (Optional) Show source name in completion menu
   formatting = cmp_format,
   window = {

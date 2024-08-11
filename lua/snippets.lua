@@ -30,11 +30,33 @@ local k = require("luasnip.nodes.key_indexer").new_key
 
 --------------------------------------------------- KEYMAP BEGIN ---------------------------------------------------
 
-vim.keymap.set({"i"}, "<C-K>", function() print('hello') ls.expand() end, {silent = true})
+-- Function to handle tab key
+local function handle_tab()
+  if ls.expand_or_jumpable() then
+    ls.expand_or_jump()
+  else
+    -- If no snippet is active, insert a tab character
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<TAB>", true, true, true), "n", true)
+  end
+end
+
+-- Function to handle shift-tab key
+local function handle_s_tab()
+  if ls.jumpable(-1) then
+    ls.jump(-1)
+  else
+    -- If no snippet is active, insert a shift-tab character
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<S-TAB>", true, true, true), "n", true)
+  end
+end
+
+vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
 -- vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
 -- vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<TAB>", function() ls.jump( 1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<S-TAB>", function() ls.jump(-1) end, {silent = true})
+-- vim.keymap.set({"i", "s"}, "<TAB>", function() ls.jump( 1) end, {silent = true})
+-- vim.keymap.set({"i", "s"}, "<S-TAB>", function() ls.jump(-1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<TAB>", handle_tab, {silent = true})
+vim.keymap.set({"i", "s"}, "<S-TAB>", handle_tab, {silent = true})
 
 vim.keymap.set({"i", "s"}, "<C-E>", function()
 	if ls.choice_active() then
