@@ -1,4 +1,5 @@
 local keymap = vim.keymap
+local func = require('func')
 
 -- LOCAL FUNCTIONS
 
@@ -7,9 +8,9 @@ local keymap = vim.keymap
 -- SHORTCUTS
 keymap.set('n', '<leader>rn', ':set rnu!<CR>')
 
-keymap.set('n', '<leader>ek', ':edit '..vim.fn.stdpath('config')..'/lua/keymap.lua <CR>')
-keymap.set('n', '<leader>ev', ':edit '..vim.fn.stdpath('config')..'/init.lua <CR>')
-keymap.set('n', '<leader>sv', ':source '..vim.fn.stdpath('config')..'/init.lua <CR>')
+keymap.set('n', '<leader>ek', ':edit ' .. vim.fn.stdpath('config') .. '/lua/keymap.lua <CR>')
+keymap.set('n', '<leader>ev', ':edit ' .. vim.fn.stdpath('config') .. '/init.lua <CR>')
+keymap.set('n', '<leader>sv', ':source ' .. vim.fn.stdpath('config') .. '/init.lua <CR>')
 keymap.set('n', '<leader>scc', ':source % <CR>')
 
 keymap.set('n', '<esc>', ':noh <CR>')
@@ -20,7 +21,9 @@ vim.api.nvim_set_keymap('n', '<S-Tab>', ':BufferLineCyclePrev<CR>', { noremap = 
 -- vim.api.nvim_set_keymap('n', '<leader>bc', ':BufferLinePickClose<CR>', { noremap = true, silent = true })
 
 -- Delete current buffer
-vim.api.nvim_set_keymap('n', '<leader>q', ':bd<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>qq', ':bd<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<leader>qa', ':BufferLineCloseOthers<CR>', { noremap = true, silent = true })
 
 -- Switch to next buffer
 -- vim.api.nvim_set_keymap('n', '<TAB>', ':bnext<CR>', { noremap = true, silent = true })
@@ -31,15 +34,64 @@ vim.api.nvim_set_keymap('n', '<leader>q', ':bd<CR>', { noremap = true, silent = 
 -- Switch to last used buffer
 vim.api.nvim_set_keymap('n', '<leader><leader>', ':b#<CR>', { noremap = true, silent = true })
 
--- zz brings the cursor to the middle of the screen. See scrolloff option too. 
--- Then third z is for fold. Need to figure out the reason. 
+-------------------------------------------------- REMAP WARNINGS --------------------------------------------------
+
+local function _remap_warn(opts)
+  local popup = func.create_hover({width = #opts.text, height = 1})
+  vim.api.nvim_buf_set_lines(popup.buf, 0, -1, false, { opts.text })
+end
+
+local function remap_warn(text)
+  return function()
+    _remap_warn({ text = text })
+  end
+end
+
+
+-- To test something
+-- vim.keymap.set('n', 'ff', remap_warn("Remapped to something"), {})
+
+-------------------------------------------------- END -----------------------------------------------
+
+-------------------------------------------------- Quickfix List --------------------------------------------------
+
+-- Next item in quickfix list
+vim.api.nvim_set_keymap('n', ']q', ':cnext<CR>', { noremap = true, silent = true })
+
+-- Previous item in quickfix list
+vim.api.nvim_set_keymap('n', '[q', ':cprev<CR>', { noremap = true, silent = true })
+
+-- Function to toggle the quickfix list
+function ToggleQuickfix()
+  local qf_exists = vim.fn.getqflist({ winid = 0 }).winid ~= 0
+  if qf_exists then
+    vim.cmd('cclose')
+  else
+    vim.cmd('copen')
+  end
+end
+
+-- Keymap to toggle the quickfix list
+vim.api.nvim_set_keymap('n', '<leader>ql', ':lua ToggleQuickfix()<CR>', { noremap = true, silent = true })
+
+--
+-- -- Open quickfix list
+-- vim.api.nvim_set_keymap('n', '<leader>qo', ':copen<CR>', { noremap = true, silent = true })
+--
+-- -- Close quickfix list
+-- vim.api.nvim_set_keymap('n', '<leader>qc', ':cclose<CR>', { noremap = true, silent = true })
+-------------------------------------------------- Quickfix List End --------------------------------------------------
+
+
+-- zz brings the cursor to the middle of the screen. See scrolloff option too.
+-- Then third z is for fold. Need to figure out the reason.
 keymap.set('n', 'n', 'nzzzv')
 keymap.set('n', 'N', 'Nzzzv')
 
 -- I dont' know what this does
 -- keymap.set("x", "<leader>p", [["_dP]])
 
-keymap.set({"n", "v"}, "<leader>y", [["+y]])
+keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 -- Yank the entire file and move the cursor back to where it was using marks
 keymap.set("n", "Y", [[mZgg0VG"+y`Z]])
 
@@ -116,30 +168,31 @@ end
 
 keymap.set('n', '<leader>ff', find_files_from_project_git_root, {})
 keymap.set('n', '<leader>fg', live_grep_from_project_git_root, {})
+keymap.set('n', '<leader>fl', telescope_wrapper(builtin.resume), {})
 keymap.set('n', '<leader>fj', live_grep_from_project_git_root, {})
-keymap.set('n', '<leader>fb', telescope_wrapper(builtin.buffers), {})
+keymap.set('n', '<leader>fb', remap_warn("fb Remapped to f;"), {})
 keymap.set('n', '<leader>f;', telescope_wrapper(builtin.buffers), {})
 keymap.set('n', '<leader>fm', telescope_wrapper(builtin.marks), {})
 
-keymap.set('n', '<leader>fh', function()
-  -- Press CTRL-E to edit the command
-  builtin.command_history({
-    initial_mode = 'normal',
-    mappings = {
-      n = {
-        ['e'] = require('telescope.actions').edit_command_line
+keymap.set('n', '<leader>ch', function()
+    -- Press CTRL-E to edit the command
+    builtin.command_history({
+      initial_mode = 'normal',
+      mappings = {
+        n = {
+          ['e'] = require('telescope.actions').edit_command_line
+        }
       }
-    }
-  })
-end,
-{noremap = true})
+    })
+  end,
+  { noremap = true })
 
 keymap.set('n', '<leader>rr', telescope_wrapper(builtin.registers), {})
 keymap.set('n', '<leader>fo', telescope_wrapper(builtin.oldfiles))
 keymap.set('n', '<leader>fw', '<cmd>Telescope grep_string<cr>')
 
 keymap.set('n', '<leader>ft', function()
-  require('telescope.builtin').grep_string({search = 'TODO', initial_mode = 'normal'})
+  require('telescope.builtin').grep_string({ search = 'TODO', initial_mode = 'normal' })
 end)
 
 -- TELESCOPE GIT
@@ -157,7 +210,7 @@ keymap.set('n', '<leader>u', function()
 end)
 
 -- NVIM TREE
-keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', {silent = true, noremap = true})
+keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { silent = true, noremap = true })
 
 -- Adjust heigh of pane
 keymap.set('n', '<LEADER>>', '10<C-W>>')
@@ -165,7 +218,7 @@ keymap.set('n', '<LEADER><', '10<C-W><')
 keymap.set('n', '<LEADER>+', '10<C-W>+')
 keymap.set('n', '<LEADER>-', '10<C-W>-')
 
--- Todo COMMENTS
+-- TODO COMMENTS
 vim.keymap.set("n", "]t", function()
   require("todo-comments").jump_next()
 end, { desc = "Next todo comment" })
@@ -221,7 +274,7 @@ vim.keymap.set('n', '<leader>ls', trouble_fn('lsp_document_symbols'))
 vim.keymap.set('n', '<leader>li', trouble_fn('lsp_incoming_calls'))
 vim.keymap.set('n', '<leader>lo', trouble_fn('lsp_outgoing_calls'))
 vim.keymap.set('n', 'gr', trouble_fn('lsp_references'))
-vim.keymap.set('n', '<leader>lm', trouble_fn('lsp_implementations')) -- gi Already does this
+vim.keymap.set('n', '<leader>lm', trouble_fn('lsp_implementations'))  -- gi Already does this
 vim.keymap.set('n', '<leader>lt', trouble_fn('lsp_type_definitions')) -- TODO Should be mapped to g commands
 vim.keymap.set('n', '<leader>tt', trouble_fn('todo'))
 
@@ -244,8 +297,6 @@ vim.keymap.set('n', 'K', vim.lsp.buf.hover)
 -- keymap.set('n', '<leader>lo', telescope_wrapper(builtin.lsp_outgoing_calls))
 
 -- The power of g
--- g + ;: Repeat the last f or t command (find or till).
--- g + ,: Repeat the last F or T command (find or till backwards).
 -- gf: Go to the file name under the cursor.
 -- gF: Go to the file name under the cursor and jump to the line number following the filename.
 -- gv: Reselect the last visual selection.

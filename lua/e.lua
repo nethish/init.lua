@@ -97,7 +97,6 @@ end
 ----------------------------- UI Test ----------------------------
 
 local function a()
-  vim.print('helo')
   local buf, win = create_floating_window() -- Create a new empty buffer
 
 
@@ -117,17 +116,71 @@ local function a()
   vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<Cmd>close<CR>', {})
   vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<Cmd>close<CR>', {})
 
-  vim.print(buf)
-  vim.api.nvim_buf_add_highlight(buf, -1, 'MyHighlightGroup', 0, 0, 10)
-  local k = vim.api.nvim_buf_get_lines(buf, 0, 2, false)
-  vim.print(k)
+  -- vim.print(buf)
+  -- vim.api.nvim_buf_add_highlight(buf, -1, 'MyHighlightGroup', 0, 0, 10)
+  -- local k = vim.api.nvim_buf_get_lines(buf, 0, 2, false)
+  -- vim.print(k)
 
 end
 
-vim.keymap.set('n', '<leader>q', a)
+vim.keymap.set('n', '<leader>aa', a)
 
 
+function CreateFloatingWindowWithText()
+  -- Define the content for the buffer
+  local content = {
+    "This is a floating window.",
+    "The cursor will not move.",
+    "You can display any text here.",
+  }
 
+  -- Create a new buffer for the floating window
+  local buf = vim.api.nvim_create_buf(false, true) -- Not listed, modifiable
+
+  -- Set the buffer content
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
+
+  -- Define the size and position of the floating window
+  local width = 40
+  local height = 10
+
+  -- Get the current cursor position
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  local row, col = cursor_pos[1] - 1, cursor_pos[2]
+
+  -- Define floating window options
+  local opts = {
+    relative = 'editor',
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    anchor = 'NW',
+    border = 'rounded',
+  }
+
+  -- Create the floating window
+  local win = vim.api.nvim_open_win(buf, false, opts) -- False to not focus
+
+  -- Set the buffer to be read-only (optional)
+  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+
+  -- Close the floating window when any key is pressed or buffer is left
+  vim.api.nvim_create_autocmd('BufLeave', {
+    buffer = buf,
+    callback = function()
+      if vim.api.nvim_win_is_valid(win) then
+        vim.api.nvim_win_close(win, true)
+      end
+    end,
+  })
+
+  -- Set a keymap to manually close the floating window (optional)
+  vim.api.nvim_set_keymap('n', '<Esc>', ':lua if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end<CR>', { noremap = true, silent = true })
+end
+
+
+vim.keymap.set('n', '<leader>aa', CreateFloatingWindowWithText)
 -----------------------------------------------------------
 
 -- BUFFER APIs
@@ -243,7 +296,6 @@ vim.api.nvim_create_user_command('FF', function()
     local test_name_node = node:field('name')[1]
     local test_name = vim.treesitter.get_node_text(test_name_node, 0)
 
-    vim.print(test_name)
 
     local root = find_go_project_root()
     local cmd = "cd " .. root .. ";"
@@ -359,77 +411,3 @@ return create_popup
 -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 -- buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 --------------------------------
-
--- cmp.setup.cmdline(':', {
---     mapping = cmp.mapping.preset.cmdline({
---         ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c' }),
---         ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c' }),
---     }),
---     sources = cmp.config.sources({
---         { name = 'path' }
---     }, {
---         { name = 'cmdline' }
---     })
--- })
-
--- cmp.setup.cmdline(':', {
---   mapping = cmp.mapping.preset.cmdline(),
---   sources = cmp.config.sources({
---     {name = 'path'},
---     {name = 'nvim_lsp'},
---     {name = 'buffer'},
---     {name = 'luasnip'},
---     {name = 'nvim_lua'}
---   }, {
---     {
---       name = 'cmdline',
---       option = {
---         ignore_cmds = { 'Man', '!' }
---       }
---     }
---   })
--- })
-
-
--- local cmp = require('cmp')
---
--- cmp.setup({
---   sources = {
---     {name = 'nvim_lsp'},
---   },
---   mapping = {
---     ['<C-y>'] = cmp.mapping.confirm({select = false}),
---     ['<C-e>'] = cmp.mapping.abort(),
---     ['<Up>'] = cmp.mapping.select_prev_item({behavior = 'select'}),
---     ['<Down>'] = cmp.mapping.select_next_item({behavior = 'select'}),
---     ['<C-p>'] = cmp.mapping(function()
---       if cmp.visible() then
---         cmp.select_prev_item({behavior = 'insert'})
---       else
---         cmp.complete()
---       end
---     end),
---     ['<C-n>'] = cmp.mapping(function()
---       if cmp.visible() then
---         cmp.select_next_item({behavior = 'insert'})
---       else
---         cmp.complete()
---       end
---     end),
---   },
---   snippet = {
---     expand = function(args)
---       require('luasnip').lsp_expand(args.body)
---     end,
---   },
--- })
-
--- vim.api.nvim_create_autocmd({"BufWritePost"}, {
---   pattern = {"*.go"},
---   command = "silent! !gofumpt -w % && golines -w -m 120 % && gosimports -w %",
--- })
-
--- vim.api.nvim_create_autocmd({"BufWritePost"}, {
---   pattern = {"*.go"},
---   command = "silent! !gofumpt -w % && golines -w -m 120 % && gosimports -w %",
--- })

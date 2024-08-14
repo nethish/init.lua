@@ -50,21 +50,21 @@ local function handle_s_tab()
   end
 end
 
-vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
+vim.keymap.set({ "i" }, "<C-K>", function() ls.expand() end, { silent = true })
 -- vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
 -- vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
 -- vim.keymap.set({"i", "s"}, "<TAB>", function() ls.jump( 1) end, {silent = true})
 -- vim.keymap.set({"i", "s"}, "<S-TAB>", function() ls.jump(-1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<TAB>", handle_tab, {silent = true})
-vim.keymap.set({"i", "s"}, "<S-TAB>", handle_tab, {silent = true})
+vim.keymap.set({ "i", "s" }, "<TAB>", handle_tab, { silent = true })
+vim.keymap.set({ "i", "s" }, "<S-TAB>", handle_tab, { silent = true })
 
-vim.keymap.set({"i", "s"}, "<C-E>", function()
-	if ls.choice_active() then
-		ls.change_choice(1)
-	end
-end, {silent = true})
+vim.keymap.set({ "i", "s" }, "<C-E>", function()
+  if ls.choice_active() then
+    ls.change_choice(1)
+  end
+end, { silent = true })
 
-vim.keymap.set({"n"}, "<leader>ss", "<cmd>source ~/.config/nvim/lua/snippets.lua<CR>")
+vim.keymap.set({ "n" }, "<leader>ss", "<cmd>source ~/.config/nvim/lua/snippets.lua<CR>")
 
 --------------------------------------------------- KEYMAP END ---------------------------------------------------
 
@@ -73,8 +73,8 @@ vim.keymap.set({"n"}, "<leader>ss", "<cmd>source ~/.config/nvim/lua/snippets.lua
 
 
 ls.add_snippets("all", {
-  s("--", fmt("--------------------------------------------------", { })),
-  s("==", fmt("==================================================", { })),
+  s("--", fmt("--------------------------------------------------", {})),
+  s("==", fmt("==================================================", {})),
 })
 
 
@@ -86,9 +86,9 @@ ls.add_snippets("lua", {
 
 ls.add_snippets("go", {
   s("ie", fmt("if {} != nil {{\n\t{}\n}}", { i(1, "err"), i(2) })),
-  s("var", fmt("{}, {} = {}({})", { i(1, "ret"), i(2, "err", "_"), i(3, "fun"), i(4, "")})),
-  s("func", fmt("func {}({}) {}{{\n\t{}\nreturn\n}}", { i(1, "Function"), i(2), i(3, ""), i(4, "")})),
-  s("con", fmt("ctx context.Context", { })),
+  s("var", fmt("{}, {} = {}({})", { i(1, "ret"), i(2, "err", "_"), i(3, "fun"), i(4, "") })),
+  s("func", fmt("func {}({}) {}{{\n\t{}\nreturn\n}}", { i(1, "Function"), i(2), i(3, ""), i(4, "") })),
+  s("con", fmt("ctx context.Context", {})),
 })
 
 
