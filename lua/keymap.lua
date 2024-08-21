@@ -32,7 +32,8 @@ vim.api.nvim_set_keymap('n', '<leader>qa', ':BufferLineCloseOthers<CR>', { norem
 -- vim.api.nvim_set_keymap('n', '<S-TAB>', ':bprevious<CR>', { noremap = true, silent = true })
 
 -- Switch to last used buffer
-vim.api.nvim_set_keymap('n', '<leader><leader>', ':b#<CR>', { noremap = true, silent = true })
+ -- vim.api.nvim_set_keymap('n', '<leader><leader>', ':b#<CR>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap({ 'n', 'v' }, '<leader><leader>f', 'za', { noremap = true, silent = true })
 
 -------------------------------------------------- REMAP WARNINGS --------------------------------------------------
 
@@ -189,7 +190,8 @@ keymap.set('n', '<leader>ch', function()
 
 keymap.set('n', '<leader>rr', telescope_wrapper(builtin.registers), {})
 keymap.set('n', '<leader>fo', telescope_wrapper(builtin.oldfiles))
-keymap.set('n', '<leader>fw', '<cmd>Telescope grep_string<cr>')
+keymap.set('n', '<leader>fw', telescope_wrapper(builtin.grep_string))
+-- keymap.set('n', '<leader>fw', '<cmd>Telescope grep_string<cr>')
 
 keymap.set('n', '<leader>ft', function()
   require('telescope.builtin').grep_string({ search = 'TODO', initial_mode = 'normal' })
