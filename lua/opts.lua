@@ -4,18 +4,20 @@ local o = vim.o
 o.tabstop = 2
 o.softtabstop = 2
 o.shiftwidth = 2
+
 vim.opt.foldmethod = 'expr'
+vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevelstart = 99
 
-
-vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 -- vim.o.foldtext = "v:lua.vim.treesitter.foldtext()"
 vim.o.foldtext = ""
+vim.o.foldtext = ""
 vim.o.foldcolumn = "0"
-vim.opt.foldnestmax = 4
+-- vim.opt.foldnestmax = 4
 
-vim.opt.foldlevel = 99
+-- vim.opt.foldlevel = 99
 -- Optional: Start with folds closed if you prefer
-vim.opt.foldlevelstart = 3
+-- vim.opt.foldlevelstart = 3
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "go",

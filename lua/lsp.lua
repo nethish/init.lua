@@ -1,5 +1,6 @@
 local lsp_zero = require('lsp-zero')
 local lazypath = vim.fn.stdpath("data") .. "/lazy"
+local lspconfig = require('lspconfig')
 
 lsp_zero.on_attach(function(client, bufnr)
   -- see :help lsp-zero-keybindings
@@ -25,6 +26,52 @@ require('mason-lspconfig').setup({
 })
 
 require('lspconfig').gopls.setup({
+  settings = {
+    gopls = {
+      gofumpt = true,
+      staticcheck = true,
+      experimentalPostfixCompletions = true,
+      completeUnimported = true,  -- Autocomplete unimported packages
+      deepCompletion = true,      -- Enable deep completion, which suggests potential completions from unimported packages
+      usePlaceholders = true,     -- Enable placeholders for function parameters
+      matcher = "Fuzzy",          -- Options: "CaseSensitive", "CaseInsensitive", "Fuzzy"
+      analyses = {
+        unusedparams = true,    -- Detect unused parameters
+        nilness = true,         -- Detect redundant nil checks
+        shadow = true,          -- Detect shadowed variables
+        unusedwrite = true,     -- Detect unused writes to variables
+        useany = true,          -- Detect usage of `interface{}` instead of more specific types
+      },
+    }
+  },
+  -- analyses = {
+  --   unusedparams = true,    -- Detect unused parameters
+  --   nilness = true,         -- Detect redundant nil checks
+  --   shadow = true,          -- Detect shadowed variables
+  --   unusedwrite = true,     -- Detect unused writes to variables
+  --   useany = true,          -- Detect usage of `interface{}` instead of more specific types
+  -- },
+})
+
+
+-- lspconfig.gopls.setup {
+--   -- on_attach = on_attach,
+--   -- capabilities = capabilities,
+--   -- cmd = {"gopls"},
+--   -- filetypes = { "go", "gomod", "gowork", "gotmpl" },
+--   -- root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+--   settings = {
+--     gopls = {
+--       completeUnimported = true,
+--       usePlaceholders = true,
+--       analyses = {
+--         unusedparams = true,
+--       },
+--     },
+--   },
+-- }
+
+lspconfig.rust_analyzer.setup({
   -- settings = {
   --   gopls = {
   --     gofumpt = true
@@ -32,15 +79,7 @@ require('lspconfig').gopls.setup({
   -- }
 })
 
-require('lspconfig').rust_analyzer.setup({
-  -- settings = {
-  --   gopls = {
-  --     gofumpt = true
-  --   }
-  -- }
-})
-
-require('lspconfig').lua_ls.setup({
+lspconfig.lua_ls.setup({
   settings = {
     Lua = {
       runtime = {

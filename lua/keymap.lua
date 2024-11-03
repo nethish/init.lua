@@ -21,7 +21,7 @@ vim.api.nvim_set_keymap('n', '<S-Tab>', ':BufferLineCyclePrev<CR>', { noremap = 
 -- vim.api.nvim_set_keymap('n', '<leader>bc', ':BufferLinePickClose<CR>', { noremap = true, silent = true })
 
 -- Delete current buffer
-vim.api.nvim_set_keymap('n', '<leader>qq', ':bd<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>qk', ':bd<CR>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<leader>qa', ':BufferLineCloseOthers<CR>', { noremap = true, silent = true })
 
@@ -191,7 +191,6 @@ keymap.set('n', '<leader>ch', function()
 keymap.set('n', '<leader>rr', telescope_wrapper(builtin.registers), {})
 keymap.set('n', '<leader>fo', telescope_wrapper(builtin.oldfiles))
 keymap.set('n', '<leader>fw', telescope_wrapper(builtin.grep_string))
--- keymap.set('n', '<leader>fw', '<cmd>Telescope grep_string<cr>')
 
 keymap.set('n', '<leader>ft', function()
   require('telescope.builtin').grep_string({ search = 'TODO', initial_mode = 'normal' })
@@ -281,8 +280,9 @@ vim.keymap.set('n', '<leader>lt', trouble_fn('lsp_type_definitions')) -- TODO Sh
 vim.keymap.set('n', '<leader>tt', trouble_fn('todo'))
 
 vim.keymap.set('n', 'K', vim.lsp.buf.hover)
-
--- TODO: Shit
+vim.keymap.set('n', '<leader>re', vim.lsp.buf.rename)
+vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
+vim.keymap.set('n', '<leader>la', vim.lsp.buf.format)
 
 
 
