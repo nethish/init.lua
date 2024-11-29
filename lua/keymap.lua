@@ -214,10 +214,10 @@ end)
 keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { silent = true, noremap = true })
 
 -- Adjust heigh of pane
-keymap.set('n', '<LEADER>>', '10<C-W>>')
-keymap.set('n', '<LEADER><', '10<C-W><')
-keymap.set('n', '<LEADER>+', '10<C-W>+')
-keymap.set('n', '<LEADER>-', '10<C-W>-')
+keymap.set('n', '<Right>', '10<C-W>>')
+keymap.set('n', '<Left>', '10<C-W><')
+keymap.set('n', '<Up>', '10<C-W>+')
+keymap.set('n', '<Down>', '10<C-W>-')
 
 -- TODO COMMENTS
 vim.keymap.set("n", "]t", function()
