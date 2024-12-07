@@ -64,3 +64,29 @@ if has("persistent_undo")
 endif
 ]])
 
+vim.o.updatetime = 1000
+vim.api.nvim_create_autocmd("CursorHold", {
+  pattern = "*",
+  callback = function()
+    if vim.bo.modified then
+      vim.cmd("write")
+    end
+  end,
+})
+
+
+
+local autosave_group = vim.api.nvim_create_augroup('autosave', { clear = true })
+
+vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'VimLeavePre', 'InsertLeave' }, {
+	group = autosave_group,
+	callback = function(event)
+		if vim.api.nvim_buf_get_option(event.buf, 'modified') then
+			vim.schedule(function()
+				vim.api.nvim_buf_call(event.buf, function()
+					vim.cmd 'silent! write'
+				end)
+			end)
+		end
+	end,
+})
